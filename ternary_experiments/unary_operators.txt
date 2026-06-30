@@ -1,0 +1,189 @@
+#1 Always -1
+IN | OUT
+--------
+-1   -1
+ 0   -1
++1   -1
+
+#2 Always 0
+IN | OUT
+--------
+-1    0
+ 0    0
++1    0
+
+#3 Always +1
+IN | OUT
+--------
+-1   +1
+ 0   +1
++1   +1
+
+#4 
+IN | OUT
+--------
+-1    0
+ 0   -1
++1   -1
+
+#5 
+IN | OUT
+--------
+-1   -1
+ 0    0
++1   -1
+
+#6 Decrement saturating
+IN | OUT
+--------
+-1   -1
+ 0   -1
++1    0
+
+#7 Check for -1 (-1=false)
+IN | OUT
+--------
+-1   +1
+ 0   -1
++1   -1
+
+#8 Check for 0 (-1=false)
+IN | OUT
+--------
+-1   -1
+ 0   +1
++1   -1
+
+#9 Check positive (-1=false)
+IN | OUT
+--------
+-1   -1
+ 0   -1
++1   +1
+
+#10 
+IN | OUT
+--------
+-1   -1
+ 0    0
++1    0
+
+#11 
+IN | OUT
+--------
+-1    0
+ 0   -1
++1    0
+
+#12 
+IN | OUT
+--------
+-1    0
+ 0    0
++1   -1
+
+#13 Check for -1 (0=false)
+IN | OUT
+--------
+-1   +1
+ 0    0
++1    0
+
+#14 Check for 0 (0=false)
+IN | OUT
+--------
+-1    0
+ 0   +1
++1    0
+
+#15 Check positive (0=false)
+IN | OUT
+--------
+-1    0
+ 0    0
++1   +1
+
+#16 Check nonnegative (-1=false)
+IN | OUT
+--------
+-1   -1
+ 0   +1
++1   +1
+
+#17 Check nonzero (-1=false)
+IN | OUT
+--------
+-1   +1
+ 0   -1
++1   +1
+
+#18 Check nonpositive (-1=false)
+IN | OUT
+--------
+-1   +1
+ 0   +1
++1   -1
+
+#19 Increment saturating
+IN | OUT
+--------
+-1    0
+ 0   +1
++1   +1
+
+#20 Check nonzero (0=false)
+IN | OUT
+--------
+-1   +1
+ 0    0
++1   +1
+
+#21 Check nonpositive (0=false)
+IN | OUT
+--------
+-1   +1
+ 0   +1
++1    0
+
+#22 Identity
+IN | OUT
+--------
+-1   -1
+ 0    0
++1   +1
+
+#23 Flip sign
+IN | OUT
+--------
+-1   +1
+ 0    0
++1   -1
+
+#24 Increment wrapped
+IN | OUT
+--------
+-1    0
+ 0   +1
++1   -1
+
+#25 Decrement wrapped
+IN | OUT
+--------
+-1   +1
+ 0   -1
++1    0
+
+#26 Swap 0 and -1
+IN | OUT
+--------
+-1    0
+ 0   -1
++1   +1
+
+#27 Swap 0 and +1
+IN | OUT
+--------
+-1   -1
+ 0   +1
++1    0
+
