@@ -136,12 +136,31 @@ void memory_decrement(Memory * memory, Address address)
     memory_set(memory, address, new_value);
 }
 
+void memory_to_stdout(Memory * memory, Address address)
+{
+    char c = memory_get(memory, address);
+    putchar(c);
+}
+
+void memory_from_stdin(Memory * memory, Address address)
+{
+    int c = getchar();
+    if (c == EOF)
+    {
+        memory_set(memory, address, 0);
+    }
+    else
+    {
+        memory_set(memory, address, c);
+    }
+}
+
 #define MOVE_RIGHT address += 1;
 #define MOVE_LEFT address -= 1;
 #define INCREMENT memory_increment(&memory, address);
 #define DECREMENT memory_decrement(&memory, address);
-#define PUT_CHAR putchar(memory_get(&memory, address));
-#define GET_CHAR memory_set(&memory, address, getchar());
+#define PUT_CHAR memory_to_stdout(&memory, address);
+#define GET_CHAR memory_from_stdin(&memory, address);
 #define LOOP_START while (memory_get(&memory, address) != 0) {
 #define LOOP_END }
 
