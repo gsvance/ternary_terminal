@@ -148,6 +148,7 @@ void memory_decrement(Memory * memory, Address address)
 int main()
 {
     Address address = 0;
+    (void) address;  // Ignore "unused" variable
     Memory memory;
     memory_initialize(&memory);
 
