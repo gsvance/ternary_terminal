@@ -3,3 +3,6 @@
 
 # Checkpoints for Jupyter notebooks
 .ipynb_checkpoints
+
+# Compiled executable for balanced_modulo
+/balanced_modulo/balanced_modulo
