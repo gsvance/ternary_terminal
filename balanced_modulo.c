@@ -2,14 +2,20 @@
 
 int true_modulo(int n, unsigned int d)
 {
-    int m = n % ((int) d);
-    return (m < 0) ? (m + d) : m;
+    int signed_d = d;
+    int remainder = n % signed_d;
+    if (remainder < 0)
+    {
+        return remainder + signed_d;
+    }
+    return remainder;
 }
 
 int balanced_modulo(int n, unsigned int d)
 {
-    int h = ((int) d) / 2;
-    return true_modulo(n + h, d) - h;
+    int signed_d = d;
+    int half_range = signed_d / 2;
+    return true_modulo(n + half_range, d) - half_range;
 }
 
 int main()
@@ -17,9 +23,9 @@ int main()
     const unsigned int d = 5;
 
     // Test
-    for (int i = -10; i <= +10; i++)
+    for (int n = -10; n <= +10; n++)
     {
-        printf("%d \%\% %u = %d\n", i, d, balanced_modulo(i, d));
+        printf("%d %%%% %u = %d\n", n, d, balanced_modulo(n, d));
     }
 
     return 0;
