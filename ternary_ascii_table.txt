@@ -1,0 +1,55 @@
+The leftmost column is the most significant three trits of the tryte.
+The topmost row is the two least significant trits of the tryte.
+E.g., the character J is encoded as tryte 010T0.
+
+
+      TT   T0   T1   0T   00   01   1T   10   11
+TTT
+TT0
+TT1
+
+T0T
+T00
+T01
+
+T1T
+T10
+T11    !    "    ;    ,    \    >    }    ]    )
+
+0TT    z    y    x    w    v    u    t    s    r
+0T0    q    p    o    n    m    l    k    j    i
+0T1    h    g    f    e    d    c    b    a    @
+
+00T    ~    `    #    $    %    ^    &    *    |
+000    -    _   DEL  EOF  NUL  EOL  SPC   =    +
+001    0    1    2    3    4    5    6    7    8
+
+01T    9    A    B    C    D    E    F    G    H
+010    I    J    K    L    M    N    O    P    Q
+011    R    S    T    U    V    W    X    Y    Z
+
+1TT    (    [    {    <    /    .    :    '    ?
+1T0
+1T1
+
+10T
+100
+101
+
+11T
+110
+111
+
+
+Fun details:
+
+- For all uppercase letters, swapping the sign from positive to negative makes
+  them lowercase. In the same way, swapping the sign to positive for a
+  lowercase letter makes it uppercase.
+- Subtract 00100 (decimal 27) from a decimal digit to get its value as a tryte.
+  Add the same value to convert a tryte in the correct range to its digit
+  character. This also works for base 12 if you use A and B as the digits for
+  10 and 11.
+- Sorting strings alphabetically might be a bit of a nightmare in this system.
+- Opening brackets are all positive tryte values. Swap their sign to negative
+  and you get the closing versions.
