@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdnoreturn.h>
+#include <ctype.h>
 
-void error(const char * message)
+noreturn void error(const char * message)
 {
-    eprintf("ERROR: %s\n", message);
+    fprintf(stderr, "ERROR: %s\n", message);
     exit(EXIT_FAILURE);
 }
 
@@ -92,20 +94,20 @@ Word crazy_operation(Word x, Word y)
     {
         switch (TWO_TRIT_CODE(x.trits[i], y.trits[i]))
         {
-            case TWO_TRIT_CODE(ZERO, ONE):
-            case TWO_TRIT_CODE(ZERO, TWO):
+            case TWO_TRIT_CODE(ONE, ZERO):
             case TWO_TRIT_CODE(ONE, ONE):
-                result.trits[i] = new_trit(ZERO);
+            case TWO_TRIT_CODE(TWO, ZERO):
+                result.trits[i] = trit_new(ZERO);
                 break;
             case TWO_TRIT_CODE(ZERO, ZERO):
-            case TWO_TRIT_CODE(ONE, ZERO):
+            case TWO_TRIT_CODE(ZERO, ONE):
             case TWO_TRIT_CODE(TWO, TWO):
-                result.trits[i] = new_trit(ONE);
+                result.trits[i] = trit_new(ONE);
                 break;
+            case TWO_TRIT_CODE(ZERO, TWO):
             case TWO_TRIT_CODE(ONE, TWO):
-            case TWO_TRIT_CODE(TWO, ZERO):
             case TWO_TRIT_CODE(TWO, ONE):
-                result.trits[i] = new_trit(TWO);
+                result.trits[i] = trit_new(TWO);
                 break;
             default:
                 error("invalid trits in crazy operation");
@@ -117,9 +119,9 @@ Word crazy_operation(Word x, Word y)
 
 void encipher(Word * memory, Word c)
 {
-    result = memory[word_as_int(c)] % 94;
+    int result = word_as_int(memory[word_as_int(c)]) % 94;
 
-    swtich (result)
+    switch (result)
     {
         case 0:
             memory[word_as_int(c)] = word_new(57);
@@ -440,7 +442,7 @@ void load_program(Word * memory, const char * file_name)
             case 62:
             case 68:
             case 81:
-                memory[index] = new_word(c);
+                memory[index] = word_new(c);
                 break;
             default:
                 error("illegal character in input file");
@@ -464,9 +466,9 @@ void load_program(Word * memory, const char * file_name)
 
 void execute_program(Word * memory)
 {
-    Word c = new_word(0);
-    Word d = new_word(0);
-    Word a = new_word(0);
+    Word c = word_new(0);
+    Word d = word_new(0);
+    Word a = word_new(0);
 
     while (1)
     {
@@ -485,8 +487,11 @@ void execute_program(Word * memory)
                 putchar(word_as_int(a) % 256);
                 break;
             case 23:
-                a = word_new(getchar());
+            {
+                int got = getchar();
+                a = (got != EOF) ? word_new(got) : word_new(POW_3_10 - 1);
                 break;
+            }
             case 39:
                 a = (
                     memory[word_as_int(d)] = rotate_right(memory[word_as_int(d)])
@@ -510,8 +515,8 @@ void execute_program(Word * memory)
 
         encipher(memory, c);
 
-        c = new_word((word_as_int(c) + 1) % POW_3_10);
-        d = new_word((word_as_int(d) + 1) % POW_3_10);
+        c = word_new((word_as_int(c) + 1) % POW_3_10);
+        d = word_new((word_as_int(d) + 1) % POW_3_10);
     }
 }
 
@@ -519,14 +524,14 @@ int main(int argc, char ** argv)
 {
     if (argc != 2)
     {
-        eprintf("Usage: %s file_name\n", argv[0]);
+        fprintf(stderr, "Usage: %s file_name\n", argv[0]);
         return EXIT_FAILURE;
     }
     
     Word * memory = malloc(sizeof(Word) * POW_3_10);
     if (memory == NULL)
     {
-        eprintf("Interpreter was not able to allocate memory.\n");
+        fprintf(stderr, "Interpreter was not able to allocate memory.\n");
         return EXIT_FAILURE;
     }
     
