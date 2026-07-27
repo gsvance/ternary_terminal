@@ -29,10 +29,16 @@
 #define NON_HALTING_INSTRUCTION_MIN 33
 #define NON_HALTING_INSTRUCTION_MAX 126
 
-//
+// Table for looking up instructions to before executing them
+const char instructing_table[DECODING_MODULUS + 1] = (
+    "+b(29e*j1VMEKLyC})8&m#~W>qxdRp0wkrUo[D7,XTcA\"lI"
+    ".v%{gJh4G\\-=O@5`_3i<?Z';FNQuY]szf$!BS/|t:Pn6^Ha"
+);
+
+// Table for enciphering instructions after running them
 const char enciphering_table[DECODING_MODULUS + 1] = (
-    "9m<.TVac`uY*MK'X~xDl}REokN:#?G\"i@5z]&gqtyfr$(we"
-    "4{WP)H-Zn,[%\3dL+Q;>U!pJS72FhOA1CB6v^=I_0/8|jsb"
+    "5z]&gqtyfr$(we4{WP)H-Zn,[%\\3dL+Q;>U!pJS72FhOA1C"
+    "B6v^=I_0/8|jsb9m<.TVac`uY*MK'X~xDl}REokN:#?G\"i@"
 );
 
 // A single trit in the Malbolge virtual machine
@@ -49,14 +55,14 @@ typedef struct {
 
 // Values corresponding to the 8 valid Malbolge instructions
 typedef enum : unsigned {
-    INSTRUCTION_JUMP = 4,
-    INSTRUCTION_OUTPUT = 5,
-    INSTRUCTION_INPUT = 23,
-    INSTRUCTION_ROTATE = 39,
-    INSTRUCTION_COPY = 40,
-    INSTRUCTION_CRAZY = 62,
-    INSTRUCTION_NOOP = 68,
-    INSTRUCTION_HALT = 81,
+    INSTRUCTION_JUMP = 'j',
+    INSTRUCTION_OUTPUT = '/',
+    INSTRUCTION_INPUT = '<',
+    INSTRUCTION_ROTATE = '*',
+    INSTRUCTION_COPY = 'i',
+    INSTRUCTION_CRAZY = 'p',
+    INSTRUCTION_NOOP = 'o',
+    INSTRUCTION_HALT = 'v',
 } Instruction;
 
 // Print an error message to stderr and then stop execution
@@ -185,7 +191,8 @@ unsigned decode_instruction(const Word * memory, Word c)
 {
     unsigned c_as_int = as_int(c);
     Word word_at_c = memory[c_as_int];
-    return (as_int(word_at_c) + c_as_int) % (unsigned) DECODING_MODULUS;
+    unsigned n = as_int(word_at_c) - NON_HALTING_INSTRUCTION_MIN + c_as_int;
+    return instructing_table[n % (unsigned) DECODING_MODULUS];
 }
 
 // Encipher an instruction in memory (used right after it is executed)
@@ -215,9 +222,7 @@ void load_program(Word * memory, const char * file_name)
         }
 
         memory[index] = as_word(character);
-        unsigned instruction = decode_instruction(memory, as_word(index));
-
-        switch (instruction) {
+        switch (decode_instruction(memory, as_word(index))) {
             case INSTRUCTION_JUMP:
             case INSTRUCTION_OUTPUT:
             case INSTRUCTION_INPUT:
@@ -255,10 +260,10 @@ void execute_program(Word * memory)
     while (true) {
         unsigned int_at_c = as_int(memory[as_int(c)]);
         if (int_at_c < NON_HALTING_INSTRUCTION_MIN) {
-            return;
+            continue;
         }
         if (int_at_c > NON_HALTING_INSTRUCTION_MAX) {
-            return;
+            continue;
         }
 
         switch (decode_instruction(memory, c)) {
