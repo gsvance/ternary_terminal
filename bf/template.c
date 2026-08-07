@@ -199,6 +199,7 @@ int main()
     /* INSERT INSTRUCTIONS HERE */
 
     memory_destroy(&memory);
+    (void) address;  // Silence warnings about unused variable
 
     return EXIT_SUCCESS;
 }
