@@ -1,8 +1,8 @@
-/* This template was written for the purpose of transpiling Brainf*ck programs
+/* This template was written for the purpose of transpiling brainf*ck programs
  * into C. It declares data types, implements the memory using dynamic arrays,
- * and even defines macros corresponding to the eight Brainf*ck instructions.
+ * and even defines macros corresponding to the eight brainf*ck instructions.
  * With all that work done, it's very easy for the accompanying Python script
- * to just insert a long list of Brainf*ck instructions in main() and feed the
+ * to just insert a long list of brainf*ck instructions in main() and feed the
  * resulting program text into a C compiler.
  */
 
@@ -24,7 +24,7 @@ void error(const char * message)
     exit(EXIT_FAILURE);
 }
 
-// Underlying types to use for the Brainf*ck memory cells and address pointer
+// Underlying types to use for the brainf*ck memory cells and address pointer
 typedef uint8_t Byte;
 typedef int64_t Address;
 
@@ -94,7 +94,7 @@ void bytes_set(Bytes * bytes, size_t index, Byte byte)
     bytes->values[index] = byte;
 }
 
-// Struct representing the infinite array of Brainf*ck memory cells
+// Struct representing the infinite array of brainf*ck memory cells
 // (both positive and negative addresses are supported)
 typedef struct {
     Bytes positive;
@@ -173,7 +173,7 @@ void memory_from_stdin(Memory * memory, Address address)
     }
 }
 
-/* The following macros correspond directly to each of the eight Brainf*ck
+/* The following macros correspond directly to each of the eight brainf*ck
  * instructions. Given the local variables referenced here, these macros only
  * make sense within the context of the main() function. Note: most of them
  * (but not all of them) *intentionally* include semicolons.
