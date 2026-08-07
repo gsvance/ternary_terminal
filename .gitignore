@@ -6,3 +6,11 @@
 
 # Compiled executable for balanced_modulo
 /balanced_modulo/balanced_modulo
+
+# Compiled executables for malbolge
+/malbolge/malbolge
+/malbolge/original
+
+# Transpiled C code and compiled executables for bf programs
+/bf/programs/*.c
+/bf/programs/*.out
