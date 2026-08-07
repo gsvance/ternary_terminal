@@ -13,7 +13,7 @@ from enum import StrEnum
 from pathlib import Path
 import subprocess
 import sys
-from typing import Final
+from typing import Final, NoReturn
 
 
 class Instruction(StrEnum):
@@ -60,9 +60,19 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     return args
 
 
+def indicate_user_error(message: str) -> NoReturn:
+    """Print a nice error message and terminate execution."""
+    print(f'ERROR: {message}')
+    sys.exit(1)
+
+
 def read_program(source_file: Path) -> Program:
     """Return a sequence of brainf*ck instructions from a given source file.
     """
+    if not source_file.is_file():
+        indicate_user_error(
+            f'source file does not exist: {str(source_file)!r}'
+        )
     source_code = source_file.read_text(encoding='utf-8')
     program: list[Instruction] = []
     for character in source_code:
