@@ -14,3 +14,7 @@
 # Transpiled C code and compiled executables for bf programs
 /bf/programs/*.c
 /bf/programs/*.out
+
+# Transpiled C code and compiled executables for boof programs
+/boof/programs/*.c
+/boof/programs/*.out
