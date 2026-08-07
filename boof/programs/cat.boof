@@ -1,0 +1,19 @@
+A cat program in boolf*ck via direct translation from brainf*ck
+
+There is a 5 instruction brainf*ck cat program that assumes EOF gives zero
+Translate each instruction directly into boolf*ck and you get this
+
+comma
+>,>,>,>,>,>,>,>,<<<<<<<<
+
+open bracket
+>>>>>>>>>+<<<<<<<<+[>+]<[<]>>>>>>>>>[+<<<<<<<<[>]+<[+<]
+
+period
+>;>;>;>;>;>;>;>;<<<<<<<<
+
+comma
+>,>,>,>,>,>,>,>,<<<<<<<<
+
+close bracket
+>>>>>>>>>+<<<<<<<<+[>+]<[<]>>>>>>>>>]<[+<]
