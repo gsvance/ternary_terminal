@@ -84,8 +84,27 @@ def read_program(source_file: Path) -> Program:
 
 
 def validate(program: Program) -> None:
-    # TODO: raise errors if program contains mismatched brackets
-    return
+    """Report an error if the program is not syntactically valid."""
+    brackets_opened = 0
+    for instruction in program:
+        match instruction:
+            case Instruction.LOOP_START:
+                brackets_opened += 1
+            case Instruction.LOOP_END:
+                if brackets_opened < 1:
+                    indicate_user_error(
+                        'found bracket mismatch:'
+                        + ' program closes more loops than it opens'
+                    )
+                brackets_opened -= 1
+            case _:
+                # We're only concerned with checking that the loop brackets
+                # nest properly, so ignore any other instructions.
+                pass
+    if brackets_opened > 0:
+        indicate_user_error(
+            'found bracket mismatch: program opens more loops than it closes'
+        )
 
 
 def optimize(program: Program) -> Program:
