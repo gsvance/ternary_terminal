@@ -68,7 +68,6 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument('source_file', type=Path)
     parser.add_argument('-r', '--run', action='store_true')
     args = parser.parse_args(argv[1:])
-    print(args)
     return args
 
 
