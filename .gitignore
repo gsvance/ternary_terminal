@@ -6,3 +6,7 @@
 
 # Compiled executable for balanced_modulo
 /balanced_modulo/balanced_modulo
+
+# Compiled executables for malbolge
+/malbolge/malbolge
+/malbolge/original
