@@ -32,6 +32,16 @@ class Instruction(StrEnum):
 # For typing purposes, a "program" is an immutable sequence of instructions
 type Program = tuple[Instruction, ...]
 
+
+# Table of optimizations that can be used to shorten brainf*ck programs
+OPTIMIZATIONS: Final[dict[str, str]] = {
+    '><': '',
+    '<>': '',
+    '+-': '',
+    '-+': '',
+}
+
+
 # Path to the template C program file for transpilation
 TEMPLATE_C_FILE: Final[Path] = Path(__file__).parent / 'template.c'
 
@@ -108,8 +118,15 @@ def validate(program: Program) -> None:
 
 
 def optimize(program: Program) -> Program:
-    # TODO: simplify the program by removing things like '><' or '+-'
-    return program
+    """Optimize the program so that it requires fewer instructions."""
+    program_as_str = ''.join(instruction.value for instruction in program)
+    while True:
+        length = len(program_as_str)
+        for bad_str, better_str in OPTIMIZATIONS.items():
+            program_as_str = program_as_str.replace(bad_str, better_str)
+        if len(program_as_str) == length:
+            break
+    return tuple(Instruction(character) for character in program_as_str)
 
 
 def transpile(program: Program, source_file: Path) -> Path:
