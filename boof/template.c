@@ -15,9 +15,6 @@
 // For uint8_t and int64_t
 #include <stdint.h>
 
-// For bool
-#include <stdbool.h>
-
 // Print an error message and terminate the program
 void error(const char * message)
 {
@@ -27,166 +24,163 @@ void error(const char * message)
     exit(EXIT_FAILURE);
 }
 
-// Underlying type to use for the address pointer
+// Underlying types to use for the boolf*ck memory cells and address pointer
+typedef uint8_t Bit;  // Eight bits but we're only using one :(
 typedef int64_t Address;
 
-// Dynamic array of bool values that can be reallocated as needed
+// Dynamic array of bit values that can be reallocated as needed
 typedef struct {
-    bool * values;
+    Bit * values;
     size_t capacity;
     size_t count;
-} Bools;
+} Bits;
 
-// How large should the dynamic bools arrays be when first allocated?
-#define BOOLS_INITIAL_CAPACITY 2
+// How large should the dynamic bits arrays be when first allocated?
+#define BITS_INITIAL_CAPACITY 2
 
-// By how much should the dynamic bools arrays expand when they reallocate?
-#define BOOLS_REALLOC_FACTOR 2
+// By how much should the dynamic bits arrays expand when they reallocate?
+#define BITS_REALLOC_FACTOR 2
 
-// Allocate initial heap memory for the dynamic bools array
-void bools_initialize(Bools * bools)
+// Allocate initial heap memory for the dynamic bits array
+void bits_initialize(Bits * bits)
 {
-    bools->values = malloc(sizeof(bool) * BOOLS_INITIAL_CAPACITY);
-    if (bools->values == NULL) {
-        error("failure to allocate bools array");
+    bits->values = malloc(sizeof(Bit) * BITS_INITIAL_CAPACITY);
+    if (bits->values == NULL) {
+        error("failure to allocate bits array");
     }
-    bools->capacity = BOOLS_INITIAL_CAPACITY;
-    bools->count = 0;
+    bits->capacity = BITS_INITIAL_CAPACITY;
+    bits->count = 0;
 }
 
-// Deallocate the heap memory being used by the dynamic bools array
-void bools_destroy(Bools * bools)
+// Deallocate the heap memory being used by the dynamic bits array
+void bits_destroy(Bits * bits)
 {
-    free(bools->values);
-    bools->values = NULL;
-    bools->count = bools->capacity = 0;
+    free(bits->values);
+    bits->values = NULL;
+    bits->count = bits->capacity = 0;
 }
 
-// Append a new bool value to the end of the dynamic array of bools
-void bools_append(Bools * bools, bool b)
+// Append a new bit value to the end of the dynamic array of bits
+void bits_append(Bits * bits, Bit bit)
 {
-    if (bools->capacity <= bools->count) {
-        size_t new_capacity = bools->capacity * BOOLS_REALLOC_FACTOR;
-        bools->values = realloc(bools->values, sizeof(bool) * new_capacity);
-        if (bools->values == NULL) {
-            error("failure to reallocate bools array");
+    if (bits->capacity <= bits->count) {
+        size_t new_capacity = bits->capacity * BITS_REALLOC_FACTOR;
+        bits->values = realloc(bits->values, sizeof(Bit) * new_capacity);
+        if (bits->values == NULL) {
+            error("failure to reallocate bits array");
         }
-        bools->capacity = new_capacity;
+        bits->capacity = new_capacity;
     }
 
-    bools->values[(bools->count)++] = b;
+    bits->values[(bits->count)++] = bit;
 }
 
-// Retrieve the bool value stored at a particular index
-// If index is out of range, append false bools as needed
-bool bools_get(Bools * bools, size_t index)
+// Retrieve the bit value stored at a particular index
+// If index is out of range, append zero bits as needed
+Bit bits_get(Bits * bits, size_t index)
 {
-    while (bools->count <= index) {
-        bools_append(bools, false);
+    while (bits->count <= index) {
+        bits_append(bits, 0);
     }
-    return bools->values[index];
+    return bits->values[index];
 }
 
-// Set the bool value stored at a particular index
-// If index is out of range, append false bools as needed
-void bools_set(Bools * bools, size_t index, bool b)
+// Set the bit value stored at a particular index
+// If index is out of range, append zero bits as needed
+void bits_set(Bits * bits, size_t index, Bit bit)
 {
-    while (bools->count <= index) {
-        bools_append(bools, false);
+    while (bits->count <= index) {
+        bits_append(bits, 0);
     }
-    bools->values[index] = b;
+    bits->values[index] = bit;
 }
 
 // Struct representing the infinite array of boolf*ck memory cells
 // (both positive and negative addresses are supported)
 typedef struct {
-    Bools positive;
-    Bools negative;
+    Bits positive;
+    Bits negative;
 } Memory;
 
 // Allocate initial heap memory for the memory struct
 void memory_initialize(Memory * memory)
 {
-    bools_initialize(&memory->positive);
-    bools_initialize(&memory->negative);
+    bits_initialize(&memory->positive);
+    bits_initialize(&memory->negative);
 }
 
 // Deallocate the heap memory being used by the memory struct
 void memory_destroy(Memory * memory)
 {
-    bools_destroy(&memory->positive);
-    bools_destroy(&memory->negative);
+    bits_destroy(&memory->positive);
+    bits_destroy(&memory->negative);
 }
 
-// Retrieve the value of the bool in the current memory cell
-bool memory_get(Memory * memory, Address address)
+// Retrieve the value of the bit in the current memory cell
+Bit memory_get(Memory * memory, Address address)
 {
     size_t index;
     if (address >= 0) {
         index = address;
-        return bools_get(&memory->positive, index);
+        return bits_get(&memory->positive, index);
     } else {  // The address is negative
         index = -(address + 1);
-        return bools_get(&memory->negative, index);
+        return bits_get(&memory->negative, index);
     }
 }
 
-// Set the bool in the current memory cell to a particular value
-void memory_set(Memory * memory, Address address, bool value)
+// Set the bit in the current memory cell to a particular value
+void memory_set(Memory * memory, Address address, Bit value)
 {
     size_t index;
     if (address >= 0) {
         index = address;
-        bools_set(&memory->positive, index, value);
+        bits_set(&memory->positive, index, value);
     } else {  // The address is negative
         index = -(address + 1);
-        bools_set(&memory->negative, index, value);
+        bits_set(&memory->negative, index, value);
     }
 }
 
-// Increment the bool in the current memory cell by one
-void memory_increment(Memory * memory, Address address)
+// Flip the bit in the current memory cell from 0 to 1 or from 1 to 0
+void memory_flip(Memory * memory, Address address)
 {
-    bool value = memory_get(memory, address);
-    memory_set(memory, address, !value);
+    Bit value = memory_get(memory, address);
+    memory_set(memory, address, (value == 0) ? 1 : 0);
 }
 
-// Write one bool from the current memory cell to stdout
-void output_bool(Memory * memory, Address address)
+// Write one bit from the current memory cell to stdout
+void output_bit(Memory * memory, Address address)
 {
     static uint8_t buffer = 0;
-    static size_t bools_buffered = 0;
+    static size_t bits_buffered = 0;
 
-    bool b = memory_get(memory, address);
-    buffer |= (b ? 1 : 0) << bools_buffered;
-    ++bools_buffered;
+    Bit bit = memory_get(memory, address);
+    buffer |= ((bit == 0) ? 0 : 1) << (bits_buffered++);
 
-    if (bools_buffered == 8) {
+    if (bits_buffered == 8) {
         int c = buffer;
         putchar(c);
         buffer = 0;
-        bools_buffered = 0;
+        bits_buffered = 0;
     }
 }
 
-// Load one bool into the current memory cell from stdin
-void input_bool(Memory * memory, Address address)
+// Load one bit into the current memory cell from stdin
+void input_bit(Memory * memory, Address address)
 {
     static uint8_t buffer = 0;
-    static size_t bools_buffered = 0;
+    static size_t bits_buffered = 0;
 
-    if (bools_buffered == 0) {
+    if (bits_buffered == 0) {
         int c = getchar();
-        if (c == EOF) {
-            c = 0;
-        }
-        buffer = c;
-        bools_buffered = 8;
+        buffer = (c == EOF) ? 0 : c;
+        bits_buffered = 8;
     }
 
-    bool b = (buffer & (1 << (bools_buffered - 1))) != 0;
-    memory_set(memory, address, b);
-    --bools_buffered;
+    unsigned mask = 0x100 >> (bits_buffered--);
+    Bit bit = ((buffer & mask) == 0) ? 0 : 1;
+    memory_set(memory, address, bit);
 }
 
 /* The following macros correspond directly to each of the seven boolf*ck
@@ -196,10 +190,10 @@ void input_bool(Memory * memory, Address address)
  */
 #define MOVE_RIGHT ++address;
 #define MOVE_LEFT --address;
-#define INCREMENT memory_increment(&memory, address);
-#define PUT_BOOL output_bool(&memory, address);
-#define GET_BOOL input_bool(&memory, address);
-#define LOOP_START while (memory_get(&memory, address)) {
+#define FLIP_BIT memory_flip(&memory, address);
+#define PUT_BIT output_bit(&memory, address);
+#define GET_BIT input_bit(&memory, address);
+#define LOOP_START while (memory_get(&memory, address) != 0) {
 #define LOOP_END }
 
 // Skeleton main() function to be filled with the appropriate instructions
@@ -213,17 +207,10 @@ int main()
 
     /* INSERT INSTRUCTIONS HERE */
 
-    // Flush the output buffer by writing seven more zeros
-    LOOP_START
-    INCREMENT
-    LOOP_END
-    PUT_BOOL
-    PUT_BOOL
-    PUT_BOOL
-    PUT_BOOL
-    PUT_BOOL
-    PUT_BOOL
-    PUT_BOOL
+    // Flush the output buffer to stdout by setting the current memory cell to
+    // zero and then outputting seven more zero bits
+    LOOP_START FLIP_BIT LOOP_END
+    PUT_BIT PUT_BIT PUT_BIT PUT_BIT PUT_BIT PUT_BIT PUT_BIT
 
     memory_destroy(&memory);
     (void) address;  // Silence warnings about unused variable

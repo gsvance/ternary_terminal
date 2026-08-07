@@ -21,9 +21,9 @@ class Instruction(StrEnum):
     """
     MOVE_RIGHT = '>'
     MOVE_LEFT = '<'
-    INCREMENT = '+'
-    PUT_BOOL = ';'
-    GET_BOOL = ','
+    FLIP_BIT = '+'
+    PUT_BIT = ';'
+    GET_BIT = ','
     LOOP_START = '['
     LOOP_END = ']'
 
