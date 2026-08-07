@@ -66,7 +66,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         description='A brainf*ck compiler that uses transpilation to C.',
     )
     parser.add_argument('source_file', type=Path)
+    parser.add_argument('-r', '--run', action='store_true')
     args = parser.parse_args(argv[1:])
+    print(args)
     return args
 
 
@@ -141,8 +143,8 @@ def transpile(program: Program, source_file: Path) -> Path:
     return c_file
 
 
-def run_c_compiler(c_file: Path) -> None:
-    """Run the C compiler on a given C source file."""
+def run_c_compiler(c_file: Path) -> Path:
+    """Run the C compiler on a C source file and return the output path."""
     command: list[str] = []
     command.append(C_COMPILER)
     command.extend(C_COMPILER_FLAGS)
@@ -150,6 +152,12 @@ def run_c_compiler(c_file: Path) -> None:
     out_file = c_file.parent / (c_file.stem + '.out')
     command.extend(('-o', str(out_file)))
     subprocess.run(command, check=True)
+    return out_file
+
+
+def run_executable(out_file: Path) -> None:
+    """Run the given executable file as if on the command line."""
+    subprocess.run([str(out_file)], check=True)
 
 
 def main(argv: list[str]) -> None:
@@ -159,7 +167,9 @@ def main(argv: list[str]) -> None:
     validate(program)
     program = optimize(program)
     c_file = transpile(program, args.source_file)
-    run_c_compiler(c_file)
+    out_file = run_c_compiler(c_file)
+    if args.run:
+        run_executable(out_file)
 
 
 if __name__ == '__main__':
