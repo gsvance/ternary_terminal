@@ -84,7 +84,7 @@ size_t bytes_get(Bytes * bytes, size_t index)
     return bytes->values[index];
 }
 
-// Set the byte value sttored at a particular index
+// Set the byte value stored at a particular index
 // If index is out of range, append zero bytes as needed
 void bytes_set(Bytes * bytes, size_t index, Byte byte)
 {
