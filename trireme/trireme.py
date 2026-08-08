@@ -1,10 +1,12 @@
 #!/usr/bin/env py
 
 import argparse
+import collections
 from enum import StrEnum
 from pathlib import Path
+import random
 import sys
-from typing import Final, NoReturn
+from typing import NoReturn
 
 
 class Instruction(StrEnum):
@@ -47,7 +49,15 @@ def parse_program(file_name: Path) -> list[Instruction]:
 
 type Tryte = tuple[int, int, int, int, int]
 
-ZERO: Final[Tryte] = (0, 0, 0, 0, 0)
+
+def random_tryte() -> Tryte:
+    return (
+        random.randint(-1, 1),
+        random.randint(-1, 1),
+        random.randint(-1, 1),
+        random.randint(-1, 1),
+        random.randint(-1, 1),
+    )
 
 
 def rotate_left(tryte: Tryte) -> Tryte:
@@ -79,8 +89,10 @@ def dump_str(tryte: Tryte) -> str:
 
 
 def execute(program: list[Instruction]) -> None:
-    x: Tryte = ZERO
-    memory: dict[int, Tryte] = {}
+    x: Tryte = random_tryte()
+    memory: collections.defaultdict[int, Tryte] = collections.defaultdict(
+        random_tryte
+    )
     ptr = 0
     for instruction in program:
         match instruction:
@@ -97,7 +109,7 @@ def execute(program: list[Instruction]) -> None:
             case Instruction.NEGATE_X:
                 x = negate(x)
             case Instruction.LOAD_X:
-                x = memory.get(ptr, ZERO)
+                x = memory[ptr]
             case Instruction.STORE_X:
                 memory[ptr] = x
             case Instruction.DUMP_X:
