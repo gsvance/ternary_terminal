@@ -9,22 +9,6 @@ import sys
 from typing import NoReturn
 
 
-class Instruction(StrEnum):
-    # Memory pointer commands
-    MOVE_UP = 'mu'
-    MOVE_DOWN = 'md'
-    # Unary operations on x
-    ROTATE_X = 'rx'  # Leftward
-    SHIFT_X = 'sx'  # Rightward
-    CYCLE_X = 'cx'  # Least significant trit
-    NEGATE_X = 'nx'
-    # Copies between x and other sources
-    LOAD_X = 'xl'
-    STORE_X = 'xs'
-    # Debug operations
-    DUMP_X = 'xd'
-
-
 def parse_arguments(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog=argv[0])
     parser.add_argument('file_name', type=Path)
@@ -36,14 +20,32 @@ def indicate_user_error(message: str) -> NoReturn:
     sys.exit(1)
 
 
+class Instruction(StrEnum):
+    # Memory pointer commands
+    MOVE_UP = 'mu'
+    MOVE_DOWN = 'md'
+    # Unary operations on x
+    ROTATE_X = 'rx'  # Leftward
+    SHIFT_X = 'sx'  # Rightward
+    CYCLE_X = 'cx'  # Ones trit
+    NEGATE_X = 'nx'
+    # Copies between x and other sources
+    LOAD_X = 'xl'
+    STORE_X = 'xs'
+    # Debug operations
+    DUMP_X = 'xd'
+
+
 def parse_program(file_name: Path) -> list[Instruction]:
     source_code = file_name.read_text(encoding='utf-8')
     program: list[Instruction] = []
-    for word in source_code.strip().split():
-        try:
-            program.append(Instruction(word))
-        except ValueError:
-            indicate_user_error(f'found invalid instruction {word!r}')
+    for line in source_code.splitlines():
+        line_without_comments = line.split('#', maxsplit=1)[0]
+        for word in line_without_comments.strip().split():
+            try:
+                program.append(Instruction(word))
+            except ValueError:
+                indicate_user_error(f'found invalid instruction {word!r}')
     return program
 
 

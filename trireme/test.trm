@@ -1,23 +1,23 @@
+# Shift x rightward five times to zero it
 sx sx sx sx sx
+xd  # Dump x (should be 0)
 
-xd
-
+# Build the value 10TT0 (decimal 69) in x using rotates and cycles
 cx rx rx cx cx rx cx cx rx 
+xd  # Dump x (should be 69)
 
-xd
-
+# Store x in memory cell #0, move to cell #1, and negate x
 xs mu nx
+xd  # Dump x (should be -69)
 
-xd
-
+# Store x in memory cell #1, move to cell #0, load cell #0 into x
 xs md xl
+xd  # Dump x (should be 69)
 
-xd
-
+# Move to memory cell #1 and load it into x
 mu xl
+xd  # Dump x (should be -69)
 
-xd
-
+# Shift x rightward five times to zero it
 sx sx sx sx sx
-
-xd
+xd  # Dump x (should be 0)
