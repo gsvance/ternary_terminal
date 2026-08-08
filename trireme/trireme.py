@@ -50,6 +50,34 @@ type Tryte = tuple[int, int, int, int, int]
 ZERO: Final[Tryte] = (0, 0, 0, 0, 0)
 
 
+def rotate_left(tryte: Tryte) -> Tryte:
+    t0, t1, t2, t3, t4 = tryte
+    return t1, t2, t3, t4, t0
+
+
+def shift_right(tryte: Tryte) -> Tryte:
+    t0, t1, t2, t3, _t4 = tryte
+    return 0, t0, t1, t2, t3
+
+
+def cycle_ones_trit(tryte: Tryte) -> Tryte:
+    t0, t1, t2, t3, t4 = tryte
+    return t0, t1, t2, t3, (-1 if t4 == 1 else t4 + 1)
+
+
+def negate(tryte: Tryte) -> Tryte:
+    t0, t1, t2, t3, t4 = tryte
+    return -t0, -t1, -t2, -t3, -t4
+
+
+def dump_str(tryte: Tryte) -> str:
+    ternary = ''.join(('T' if t == -1 else str(t)) for t in tryte)
+    decimal = 0
+    for t in tryte:
+        decimal = 3 * decimal + t
+    return f'{ternary} (decimal {decimal})'
+
+
 def execute(program: list[Instruction]) -> None:
     x: Tryte = ZERO
     memory: dict[int, Tryte] = {}
@@ -61,38 +89,19 @@ def execute(program: list[Instruction]) -> None:
             case Instruction.MOVE_DOWN:
                 ptr -= 1
             case Instruction.ROTATE_X:
-                x_list = list(x)
-                x_list.append(x_list.pop(0))
-                x = tuple(x_list)
-                del x_list
+                x = rotate_left(x)
             case Instruction.SHIFT_X:
-                x_list = list(x)
-                x_list.pop()
-                x_list.insert(0, 0)
-                x = tuple(x_list)
-                del x_list
+                x = shift_right(x)
             case Instruction.CYCLE_X:
-                x_list = list(x)
-                trit = x_list.pop()
-                trit = -1 if trit == 1 else trit + 1
-                x_list.append(trit)
-                x = tuple(x_list)
-                del x_list
+                x = cycle_ones_trit(x)
             case Instruction.NEGATE_X:
-                x = tuple(-trit for trit in x)
+                x = negate(x)
             case Instruction.LOAD_X:
                 x = memory.get(ptr, ZERO)
             case Instruction.STORE_X:
                 memory[ptr] = x
             case Instruction.DUMP_X:
-                ternary = ''.join(
-                    ('T' if trit == -1 else str(trit)) for trit in x
-                )
-                decimal = 0
-                for trit in x:
-                    decimal = 3 * decimal + trit
-                print(f'Register X: {ternary} (decimal {decimal})')
-                del ternary, decimal
+                print(f'Register X: {dump_str(x)}')
             case _:
                 raise ValueError(f'unknown instruction {instruction!r}')
 
